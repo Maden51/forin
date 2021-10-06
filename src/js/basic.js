@@ -1,13 +1,25 @@
-export default function orderByProps(obj) {
+export default function orderByProps(obj, [...sort]) {
   const arr = [];
-  for (const props in obj) {
-    if (obj.hasOwnProperty(props)) {
-      arr.push({
-        key: props,
-        value: obj[props],
-      });
+  const objCopy = {};
+  Object.assign(objCopy, obj);
+  for (let i = 0; i < sort.length; i += 1) {
+    for (const prop in objCopy) {
+      if (sort[i] === prop) {
+        arr.push({
+          key: prop,
+          value: obj[prop],
+        });
+        delete objCopy[prop];
+      }
     }
   }
-  arr.sort((a, b) => a.value - b.value);
+  const restProps = Object.entries(objCopy);
+  restProps.sort();
+  for (let i = 0; i < restProps.length; i += 1) {
+    arr.push({
+      key: restProps[i][0],
+      value: restProps[i][1],
+    });
+  }
   return arr;
 }
